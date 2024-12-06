@@ -257,14 +257,13 @@ group by "COURSE_BOOKING".user_id;
     -- inner join ( 用戶王小明的已使用堂數) as "COURSE_BOOKING"
     -- on "COURSE_BOOKING".user_id = "CREDIT_PURCHASE".user_id;
 select 
-	(SUM("CREDIT_PACKAGE".credit_amount) - COUNT("COURSE_BOOKING".id)) as remaining_credit,
-	"USER".name as user_id 
+	SUM("CREDIT_PURCHASE".purchased_credits) - COUNT(DISTINCT "COURSE_BOOKING".user_id) as total,
+	"COURSE_BOOKING".user_id as user_id 
 from "CREDIT_PURCHASE"
-inner join "CREDIT_PACKAGE" on "CREDIT_PURCHASE".credit_package_id = "CREDIT_PACKAGE".id
-inner join "USER" on "CREDIT_PURCHASE".user_id = "USER".id
-inner join "COURSE_BOOKING" on "COURSE_BOOKING".user_id = "USER".id
-where "USER".name = '王小明' and "COURSE_BOOKING".cancelled_at is NULL
-group by "USER".id;
+inner join "USER" on "USER".id = "CREDIT_PURCHASE".user_id
+inner join "COURSE_BOOKING" on "COURSE_BOOKING".user_id = "USER".id 
+where "USER".name = '王小明' AND "COURSE_BOOKING".cancelled_at is NULL
+group by "COURSE_BOOKING".user_id;
 -- ████████  █████   █     ███  
 --   █ █   ██    █  █     █     
 --   █ █████ ███ ███      ████  
